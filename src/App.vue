@@ -4,21 +4,11 @@
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <site-title v-bind:title="site.title"></site-title>
       <v-spacer />
-      <v-btn icon @click="save"><v-icon>mdi-check</v-icon></v-btn>
-      <v-btn icon @click="read"><v-icon>mdi-numeric</v-icon></v-btn>
-      <v-btn icon @click="readOne"><v-icon>mdi-account-badge-alert</v-icon></v-btn>
-    <v-btn icon to="/about">
-      <v-icon>mdi-magnify</v-icon>
-    </v-btn>
-    <v-btn icon to="/">
-      <v-icon>mdi-magnify</v-icon>
-    </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer app v-model="drawer">
-      <site-menu :items="site.menu"></site-menu>
+      <site-menu v-bind:menuItems="site.menu"></site-menu>
     </v-navigation-drawer>
-
     <v-main>
       <router-view/>
     </v-main>
@@ -42,7 +32,69 @@ export default {
     return {
       drawer: false,
       site: {
-        menu: [],
+        menu: [
+          {
+            icon: 'mdi-home',
+            subItems: [
+              {
+                title: 'Dashboard',
+                to: '/'
+              }
+            ],
+            title: 'home'
+          },
+          {
+            icon: 'mdi-ticket',
+            title: 'about',
+            active: true,
+            subItems: [
+              {
+                title: 'xxx',
+                to: '/xxx'
+              }
+            ]
+          },
+          {
+            icon: 'mdi-ticket',
+            subItems: [{ title: 'List Item' }],
+            title: 'Attractions'
+          },
+          {
+            icon: 'mdi-silverware-fork-knife',
+            active: true,
+            subItems: [
+              { title: 'Breakfast & brunch' },
+              { title: 'New American' },
+              { title: 'Sushi' }
+            ],
+            title: 'Dining'
+          },
+          {
+            icon: 'mdi-school',
+            subItems: [{ title: 'List Item' }],
+            title: 'Education'
+          },
+          {
+            icon: 'mdi-run',
+            subItems: [{ title: 'List Item' }],
+            title: 'Family'
+          },
+          {
+            icon: 'mdi-bottle-tonic-plus',
+            subItems: [{ title: 'List Item' }],
+            title: 'Health'
+          },
+          {
+            icon: 'mdi-content-cut',
+            subItems: [{ title: 'List Item' }],
+            title: 'Office'
+          },
+          {
+            icon: 'mdi-tag',
+            subItems: [{ title: 'List Item' }],
+            title: 'Promotions'
+          }
+        ],
         title: '나의 타이틀',
         footer: '나의 Footer'
       }
@@ -53,30 +105,17 @@ export default {
   },
   methods: {
     subscribe () {
+      console.log('this.site', this.site)
       this.$firebase.database().ref().child('site').on('value', (sn) => {
         const v = sn.val()
         if (!v) {
           this.$firebase.database().ref().child('site').set(this.site)
+          return
         }
         this.site = v
       }, (e) => {
         console.log(e.message)
       })
-    },
-    save () {
-      this.$firebase.database().ref().child('abcd').set({
-        title: 'abcd', text: 'tttttt'
-      })
-    },
-    read () {
-      this.$firebase.database().ref().child('abcd').on('value', (sn) => {
-        console.log('read sn>>', sn)
-        console.log('read sn.val()', sn.val())
-      })
-    },
-    async readOne () {
-      const sn = await this.$firebase.database().ref().child('abcd').once('value')
-      console.log('sn.val()', sn.val())
     }
   }
 }
