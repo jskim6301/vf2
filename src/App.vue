@@ -5,15 +5,15 @@
       <site-title v-bind:title="site.title"></site-title>
       <v-spacer />
     </v-app-bar>
-
     <v-navigation-drawer app v-model="drawer">
       <site-menu v-bind:menuItems="site.menu"></site-menu>
     </v-navigation-drawer>
-    <v-main>
+    <v-content>
       <router-view/>
-    </v-main>
+    </v-content>
 
     <site-footer v-bind:footer="site.footer"></site-footer>
+
   </v-app>
 </template>
 
