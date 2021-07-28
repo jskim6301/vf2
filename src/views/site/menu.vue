@@ -140,6 +140,53 @@ export default {
     }
   },
   methods: {
+    openDialogItem (index) {
+      this.selectedItemIndex = index
+      // index가 -1인 경우는 icon을 누르는것이 아닌 +추가하기 버튼
+      if (index < 0) {
+        this.formItem.icon = 'mdi-crosshairs-question'
+        this.formItem.title = '' //타이틀 초기화
+      } else {
+        this.formItem.icon = this.items[index].icon //기존 icon 값 가져오기
+        this.formItem.title = this.items[index].title //기존 title 값 가져오기
+      }
+      this.dialogItem = true // dialog 오픈
+    },
+    openDialogSubItem (index, subIndex) {
+      this.selectedItemIndex = index
+      this.selectedSubItemIndex = subIndex
+      // index가 -1인 경우는 icon을 누르는것이 아닌 +추가하기 버튼(sub)
+      if (subIndex < 0) {
+        this.formSubItem.title = '' //기존 내용 없애기
+        this.formSubItem.to = '' //기존 내용 없애기
+      } else {
+        this.formSubItem.title = this.items[index].subItems[subIndex].title  //기존 title 값 가져오기
+        this.formSubItem.to = this.items[index].subItems[subIndex].to  //기존 to 값 가져오기
+      }
+      this.dialogSubItem = true // subdialog 오픈
+    },
+    async saveItem () {
+      // index가 -1인 경우는 icon을 누르는것이 아닌 +추가하기 버튼
+      if (this.selectedItemIndex < 0) this.items.push(this.formItem) // 추가하기 버튼 클릭시 아이템 추가
+      else {
+        this.items[this.selectedItemIndex].icon = this.formItem.icon //기존 icon값 수정
+        this.items[this.selectedItemIndex].title = this.formItem.title //기존title값 수정
+      }
+      this.save()
+    },
+    async saveSubItem () {
+      // index가 -1인 경우는 icon을 누르는것이 아닌 +추가하기 버튼(sub)
+      if (this.selectedSubItemIndex < 0) {
+        //this.items의 subItems가 정의되어 있지 않다면 빈배열([])로 생성해준뒤 push
+        if (!this.items[this.selectedItemIndex].subItems) this.items[this.selectedItemIndex].subItems = []
+        this.items[this.selectedItemIndex].subItems.push({ title: this.formSubItem.title, to: this.formSubItem.to })
+      } else {
+        //기존 title,to 값 수정
+        this.items[this.selectedItemIndex].subItems[this.selectedSubItemIndex].title = this.formSubItem.title
+        this.items[this.selectedItemIndex].subItems[this.selectedSubItemIndex].to = this.formSubItem.to
+      }
+      this.save()
+    },
     async save () {
       try {
         this.loading = true
@@ -150,47 +197,6 @@ export default {
         this.loading = false
       }
     },
-    openDialogItem (index) {
-      this.selectedItemIndex = index
-      if (index < 0) {
-        this.formItem.icon = 'mdi-crosshairs-question'
-        this.formItem.title = ''
-      } else {
-        this.formItem.icon = this.items[index].icon
-        this.formItem.title = this.items[index].title
-      }
-      this.dialogItem = true
-    },
-    async saveItem () {
-      if (this.selectedItemIndex < 0) this.items.push(this.formItem)
-      else {
-        this.items[this.selectedItemIndex].icon = this.formItem.icon
-        this.items[this.selectedItemIndex].title = this.formItem.title
-      }
-      this.save()
-    },
-    openDialogSubItem (index, subIndex) {
-      this.selectedItemIndex = index
-      this.selectedSubItemIndex = subIndex
-      if (subIndex < 0) {
-        this.formSubItem.title = ''
-        this.formSubItem.to = ''
-      } else {
-        this.formSubItem.title = this.items[index].subItems[subIndex].title
-        this.formSubItem.to = this.items[index].subItems[subIndex].to
-      }
-      this.dialogSubItem = true
-    },
-    async saveSubItem () {
-      if (this.selectedSubItemIndex < 0) {
-        if (!this.items[this.selectedItemIndex].subItems) this.items[this.selectedItemIndex].subItems = []
-        this.items[this.selectedItemIndex].subItems.push({ title: this.formSubItem.title, to: this.formSubItem.to })
-      } else {
-        this.items[this.selectedItemIndex].subItems[this.selectedSubItemIndex].title = this.formSubItem.title
-        this.items[this.selectedItemIndex].subItems[this.selectedSubItemIndex].to = this.formSubItem.to
-      }
-      this.save()
-    }
   }
 }
 </script>
