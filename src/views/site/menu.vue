@@ -31,6 +31,8 @@
               {{item.title}}
               <span v-if="$store.state.editable">
                 <v-btn icon @click="openDialogItem(i)"><v-icon>mdi-pencil</v-icon></v-btn>
+                <v-btn icon @click="moveItem(items,i,-1)" v-if="i > 0" ><v-icon>mdi-chevron-double-up</v-icon></v-btn>
+                <v-btn icon @click="moveItem(items,i,1)" v-if="i < items.length -1" ><v-icon>mdi-chevron-double-down</v-icon></v-btn>
               </span>
             </v-list-item-title>
           </v-list-item-content>
@@ -46,6 +48,8 @@
               {{subItem.title}}
               <span v-if="$store.state.editable">
                 <v-btn icon @click="openDialogSubItem(i,j)"><v-icon>mdi-pencil</v-icon></v-btn>
+                <v-btn icon @click="moveItem(item.subItems,j,-1)" v-if="j > 0" ><v-icon>mdi-chevron-double-up</v-icon></v-btn>
+                <v-btn icon @click="moveItem(item.subItems,j,1)" v-if="j < items.length -1" ><v-icon>mdi-chevron-double-down</v-icon></v-btn>
               </span>
             </v-list-item-title>
           </v-list-item-content>
@@ -202,6 +206,18 @@ export default {
         this.loading = false
       }
     },
+    moveItem(items,i,arrow){ // up -> index : -1  , down : index + 1
+      //arr.splice(n,m) : 특정 요소 지움 n : 시작  /  m : 개수
+      // arr.splice(n,m,x) : 특정 요소 지우고 x 추가
+      // let arr1 = [1,2,3,4,5];
+      // arr1.splice(1,3,100,200); // arr => [1,100,200,5]
+      // console.log(arr1); // [1,100,200,5]
+      const item = items.splice(i,1)[0] //해당 요소값 가져옴(기존 배열에서 삭제)
+      items.splice(i+arrow,0,item);// 이전 인덱스 혹은 이후 인덱스부터 지우지않고 item추가
+
+      //단축표현 items.splice(i+arrow,0,...items.splice(i,1))
+      this.save();
+    }
   }
 }
 </script>
