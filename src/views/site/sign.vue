@@ -9,6 +9,9 @@
             <v-card-actions>
                 <v-btn color="red" @click="signInWithGoogle" dark><v-icon left>mdi-google</v-icon>구글로 로그인</v-btn>
             </v-card-actions>
+            <v-card-actions>
+                <v-btn @click="signOut" dark>로그아웃</v-btn>
+            </v-card-actions>
         </v-card>
     </v-menu>
 </template>
