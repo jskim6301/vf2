@@ -27,3 +27,6 @@ pnpm-debug.log*
 .firebaserc
 firebaseConfig.js
 key.json
+
+
+REAME.md
