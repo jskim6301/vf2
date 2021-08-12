@@ -11,7 +11,7 @@
             </template>
       </v-data-table>
       <v-card-actions>
-          <v-btn @click="read"><v-icon left>mdi-page-next</v-icon></v-btn>
+          <!-- <v-btn @click="read"><v-icon left>mdi-page-next</v-icon></v-btn> -->
           <v-btn @click="openDialog(null)"><v-icon>mdi-pencil</v-icon></v-btn>
       </v-card-actions>
       <v-dialog max-width="500" v-model="dialog">
@@ -47,13 +47,32 @@ export default {
                 content: '',
             },
             dialog : false,
-            selectedItem = null;
+            selectedItem : null,
+            unsubscribe : null,
         }
     },
     created(){
-        this.read()
+        // this.read()
+        this.subscribe()
+    },
+    destroyed(){
+        if(this.unsubscribe) this.unsubscribe()
     },
     methods : {
+        subscribe(){
+            this.unsubscribe = this.$firebase.firestore().collection('boards').onSnapshot((sn) => {
+                if(sn.empty){
+                    this.items = []
+                    return
+                }
+            this.items = sn.docs.map(v => { // map을 사용해서 원하는 데이터꼴 배열 생성
+                const item = v.data()
+                return {
+                    id: v.id,title:item.title,content: item.content
+                }
+            })
+        })
+        },
         openDialog(item){
             this.selectedItem = item
             this.dialog = true
@@ -73,20 +92,20 @@ export default {
             this.$firebase.firestore().collection('boards').doc(this.selectedItem.id).update(this.form)
             this.dialog = false
         },
-        async read() {
-            const rs = await this.$firebase.firestore().collection('boards').get()
-            // if(sn.)
-            sn.docs.forEach(v => {
-                console.log(v.id)
-                console.log(v.data());
-            })
-            this.items = sn.docs.map(v => { // map을 사용해서 원하는 데이터꼴 배열 생성
-                const item = v.data()
-                return {
-                    id: v.id,title:item.title,content: item.content
-                }
-            })
-        },
+        // async read() {
+        //     const rs = await this.$firebase.firestore().collection('boards').get()
+        //     // if(sn.)
+        //     sn.docs.forEach(v => {
+        //         console.log(v.id)
+        //         console.log(v.data());
+        //     })
+        //     this.items = sn.docs.map(v => { // map을 사용해서 원하는 데이터꼴 배열 생성
+        //         const item = v.data()
+        //         return {
+        //             id: v.id,title:item.title,content: item.content
+        //         }
+        //     })
+        // },
         remove(item){
             this.$firebase.firestore().collection('boards').doc(item.id).delete()
         }
