@@ -4,7 +4,6 @@
       <v-data-table
         :headers="headers"
         :items="items"
-        :items-per-page="5"
         >
             <template v-slot:[`items.id`]="{item}">
                 <v-btn icon @click="openDialog(item)"><v-icon>mdi-pencil</v-icon></v-btn>
