@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>gg</div>
 </template>
 
 <script>
